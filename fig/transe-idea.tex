@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+[   cnode/.style={draw=black,fill=#1,minimum width=3mm,circle},
+    rnode/.style={draw=black,fill=#1,minimum width=6mm, minimum height=5mm, rectangle}
+]
+    
+
+    \node[cnode=blue!20] (h) at (0, 0) {$h$};
+    \node[cnode=red!20] (t) at (3.5, 0) {$t$};
+    
+    \draw[->] (h) to[bend left] node[midway, above]{$r$} (t);
+    
+\end{tikzpicture}

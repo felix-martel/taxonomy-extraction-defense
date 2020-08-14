@@ -1,0 +1,33 @@
+\begin{tikzpicture}
+[   cnode/.style={draw=black,fill=#1,minimum width=3mm,circle},
+    rnode/.style={draw=gray!40,fill=gray!20,minimum width=6mm, minimum height=6mm, rectangle}
+]
+    
+
+    \node[rnode] (l11) at (0, 0) {\texttt{Thing}};
+    
+    \node[rnode] (l21) at (-2, -1) {\texttt{Agent}};
+    \node[rnode] (l22) at (0, -1) {\texttt{Place}};
+    \node[rnode] (l23) at (2, -1) {\texttt{Event}};
+    
+    \node[rnode] (l31) at (-5, -2) {\texttt{Organisation}};
+    \node[rnode] (l32) at (-2.5, -2) {\texttt{Person}};
+    \node[rnode] (l33) at (-0.05, -2) {\texttt{NaturalPlace}};
+    \node[rnode] (l34) at (3.1, -2) {\texttt{PopulatedPlace}};
+    
+    \node[rnode] (l41) at (-6, -3) {\texttt{Artist}};
+    \node[rnode] (l42) at (-4.2, -3) {\texttt{Athlete}};
+    \node[rnode] (l43) at (-2, -3) {\texttt{Politician}};
+    \node[rnode] (l44) at (0.5, -3) {\texttt{Scientist}};
+    
+    \draw[->, gray!40, thick] (l11) -- (l21) {};
+    \draw[->, gray!40, thick] (l11) -- (l22) {};
+    \draw[->, gray!40, thick] (l21) -- (l31) {};
+    \draw[->, gray!40, thick] (l21) -- (l32) {};
+    \draw[->, gray!40, thick] (l22) -- (l33) {};
+    \draw[->, gray!40, thick] (l22) -- (l34) {};
+    \draw[->, gray!40, thick] (l32) -- (l41) {};
+    \draw[->, gray!40, thick] (l32) -- (l42) {};
+    \draw[->, gray!40, thick] (l32) -- (l43) {};
+    \draw[->, gray!40, thick] (l32) -- (l44) {};
+\end{tikzpicture}

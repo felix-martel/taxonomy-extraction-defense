@@ -1,0 +1,328 @@
+\documentclass{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usetikzlibrary{shapes.misc, positioning}
+\usepackage{pgfplots}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{tabularx}
+\usepackage{graphics}
+\usepackage{multirow, multicol}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+
+\title{Extraction de taxonomie par regroupement hiérarchique de plongements vectoriels de graphes de connaissances}
+\author{Félix Martel}
+\institute{Polytechnique Montréal}
+\date{Août 2020}
+
+% Theme
+\usetheme[secheader]{Boadilla}
+\setbeamertemplate{footline}[frame number]{}
+\setbeamertemplate{navigation symbols}{}
+
+
+\begin{document}
+
+\frame{\titlepage}
+
+  
+ \AtBeginSubsection[]
+  {
+     \begin{frame}[noframenumbering]
+    \frametitle{Plan}
+    \tableofcontents[ 
+        currentsection,
+        currentsubsection,
+        %hideothersubsections, 
+        %sectionstyle=show/show, 
+        %subsectionstyle=show/show, 
+    ] 
+  \end{frame}
+  }
+
+\section{Introduction}
+
+\iffalse {
+
+Introduction : graphes de connaissance, intérêt de l'extraction de taxonomies
+Modèles de plongement
+- présentation simple
+- exemple de TransE ?
+- ajouter slides finales pour autres modèles
+
+Extraction non-expressive
+- Idée générale
+- Méthode MLI
+- Méthode MLM
+- Évaluation & discussion
+
+Extraction expressive
+- Limites de l'approche précédente
+- Idée générale
+- Plongement-regroupement
+- Extraction d'axiomes
+- Évaluation quanti
+- Évaluation quali
+
+}
+\fi
+
+% Introduction, définitions et enjeux
+\begin{frame}{Introduction}
+    Un graphe de connaissance est un graphe qui permet de stocker des données de manière \textbf{structurée}.
+
+    \newline
+    Il est composé d'\textcolor{blue}{entités} et de \textcolor{red}{relations}.
+
+    \begin{figure}[H]
+        \centering
+        \input{fig/knowledge-graph-sample}
+    \end{figure}
+    
+\end{frame}
+
+
+\begin{frame}{Ontologie et taxonomie}
+
+Un graphe de connaissances s'appuie sur une \textit{ontologie}, c'est-à-dire une série d'\textbf{axiomes logiques}, comme par exemple :
+\begin{itemize}
+    \item \textcolor{blue}{$\texttt{Athlete} \sqsubseteq \texttt{Person}$} : le type \texttt{Athlete} est un sous-type de \texttt{Person}, autrement dit un.e athlète est toujours une personne
+    \item \textcolor{blue}{$\texttt{Poet} \equiv \texttt{Person} \sqcap \exists \texttt{is\_author\_of}.\texttt{Poetry}$} : un.e poète est une personne qui écrit de la poésie
+    \item \textcolor{blue}{$\texttt{Agent} \equiv \texttt{Person} \sqcup \texttt{Organisation}$} : un agent est soit une personne, soit une organisation
+    
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Ontologie et taxonomie}
+
+Taxonomie : ontologie avec uniquement des axiomes de subsumption (\textit{«A est un sous-type de B»})
+
+\begin{figure}[H]
+    \centering
+    \input{fig/taxonomy-sample}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Extraction de taxonomie}
+
+\begin{columns}[t]
+    \begin{column}{0.48\textwidth}
+        %Content
+        \textbf{Entrée} : 
+        Un graphe de connaissance $\mathcal{KG}$ sans axiome de subsumption
+        
+        \begin{figure}
+            \input{fig/kg-image}
+        \end{figure}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+        %Content
+        \textbf{Sortie} : un ensemble d'axiomes $t_k \sqsubseteq t_l$ qui forment une taxonomie des types
+        \begin{figure}
+            \input{fig/extracted-taxonomy-sample}
+        \end{figure}
+    \end{column}
+\end{columns}
+
+\end{frame}
+
+\begin{frame}{Modèles de plongement}
+    But : obtenir une représentation vectorielle de chaque entité, telle que si deux entités sont sémantiquement proches, alors leurs plongements soient géométriquement proches.
+    
+    \begin{figure}
+        \input{fig/kge-points-cloud}
+    \end{figure}
+    
+\end{frame}
+
+\begin{frame}{Modèles de plongement : un exemple}
+    Un exemple d'algorithme de plongement : \textbf{TransE} \cite{bordes2013translating}.
+    \newline \newline
+    TransE considère une relation $r$ comme une translation entre deux entités.
+
+    %\begin{figure}[H]
+    %    \centering
+    %    \input{fig/transe-idea}
+    %\end{figure}
+    \begin{figure}[H]
+        \centering
+        \input{fig/transe-idea2}
+    \end{figure}
+\end{frame}
+
+\section{Extraction de taxonomie}
+
+\subsection{Idée générale}
+
+\begin{frame}{Idée générale}
+    \begin{figure}
+        \input{fig/tex-overview}
+    \end{figure}
+\end{frame}
+
+
+\subsection{Méthode par liaison injective}
+
+
+\begin{frame}{Regroupement hiérarchique}
+On applique un algorithme de \textit{clustering} hiérarchique aux plongements $\mathbf{e}_1, \ldots, \mathbf{e}_N$ :
+\begin{figure}
+    \input{fig/clustering}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Association type-cluster}
+    \begin{figure}
+        \input{fig/cluster-metrics}
+    \end{figure}
+
+Pour un cluster $C$ et un type $t$, on peut calculer :
+\begin{itemize}
+    \item la \textbf{précision}, soit la proportion d'éléments de $C$ qui sont de type $t$ :
+    $$p(C, \textcolor{blue}{\bullet}) = \frac{3}{4}$$
+    \item le \textbf{rappel}, soit la proportion d'éléments de type $t$ qui font partie de $C$
+    $$r(C, \textcolor{blue}{\bullet}) = \frac{3}{5}$$
+    \item la \textbf{mesure $F_1$}, qui est la moyenne harmonique de la précision et du rappel
+    $$F(C, \textcolor{blue}{\bullet}) = 2(\frac{1}{p} + \frac{1}{r})^{-1} = \textcolor{blue}{\frac{2}{3}}$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Liaison injective optimale}
+    On veut associer à chaque type $t$ un cluster unique $m(t)$. Pour cela, on choisit l'assignation $t \leftarrow m(t)$ qui maximise la mesure $F_1$ globale :
+    $$m^* = \argmax_{m \only<5>{\text{ injective}}} \sum_t F(m(t), t)$$
+    \begin{figure}
+        \input{fig/liaison-injective}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Extraction de la taxonomie}
+    On peut maintenant extraire le sous-arbre composé uniquement des clusters choisis et trouver les axiomes:
+    \begin{figure}
+        \input{fig/liaison-injective-4}
+    \end{figure}
+\end{frame}
+
+\subsection{Méthode par liaison multiple}
+
+\begin{frame}{Méthode par liaison multiple (MLM)}
+    Se base également sur un regroupement hiérarchique.
+    
+    \textbf{Idée :} remplacer la liaison entre un type $t$ et un unique cluster $m^*(t)$ en une \textbf{probabilité de liaison} $P(Z_t = C)$ entre un type $t$ et un cluster $C$.
+    \begin{figure}
+        \input{fig/liaison-multiple}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Méthode par liaison multiple (MLM)}
+    Les mesures $F_1$ sont transformées en probabilités avec un softmax :
+    \begin{equation}
+        P(Z_t = C) = \frac{\displaystyle e^{ \beta F_1(t, C)}}{\displaystyle \sum_{C' \in \mathcal{C}} e^{\beta F_1(t, C')}}
+    \end{equation}
+    L'axiome $t' \sqsubset t$ devient un événement aléatoire $Z_{t'} \subset Z_{t}$.
+    \begin{align}
+        P(t' \sqsubset t) &= P(Z_{t'} \subset Z_{t}) \\
+        &= \sum_{\substack{C, C' \in \mathcal{C} \\ C' \subset C}} P(Z_{t }= C) \times P(Z_{t'} = C')
+    \end{align}
+\end{frame}
+
+\begin{frame}{MLM : exemple de calcul}
+    \begin{figure}
+        \input{fig/soft-mapping-example}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{MLM : extraction de taxonomie}
+\begin{enumerate}
+    \item Construction d'un DAG $G$ (\textit{graphe orienté acyclique})
+
+\begin{itemize}
+    \item On part d'un graphe $G$ vide
+    \item Pour chaque axiome $\alpha = t' \sqsubset t$ (trié par ordre de probabilité décroissante) :
+    \begin{itemize}
+        \item Si ajouter $\alpha$ à $G$ crée un cycle, on le rejette
+        \item Sinon, on ajoute $\alpha$ à $G$ (\textit{i.e} ajout d'une arête orientée entre $t$ et $t'$)
+    \end{itemize}
+    \item On poursuit tant que la probabilité de $\alpha$ est supérieure à un seuil $\delta$
+\end{itemize}
+    \item Calcul de la réduction transitive $G_\text{red}$
+    \item Suppression des parents multiples
+\end{enumerate}
+    \begin{figure}
+        \input{fig/te-graph-reduction}
+    \end{figure}
+\end{frame}
+
+\subsection{Évaluation}
+
+\begin{frame}{Méthode d'évaluation}
+\begin{itemize}
+    \item On évalue notre approche sur DBpédia (\href{dbpedia.org}{http://dbpedia.org})
+    \item On utilise une version simplifiée de la taxonomie DBpédia, qui couvre 75\% des triplets de type de DBpédia
+    \item Métriques pour comparer une liste d'axiomes de référence avec une liste d'axiomes extraits :
+    \begin{itemize}
+        \item \textbf{précision} : nombre d'axiomes extraits qui sont vrais
+        \item \textbf{rappel} : nombre d'axiomes vrais qui sont extraits
+        \item \textbf{mesure $F_1$} : moyenne harmonique de la précision et du rappel
+    \end{itemize}
+    \item Deux modes d'évaluation : direct ou transitif
+    \item Modèles de plongement testés : ComplEx \cite{complex}, DistMult \cite{distmult}, RDF2Vec \cite{ristoski2016rdf2vec}, TransE \cite{bordes2013translating}
+    \item Comparaison des méthodes MLI et MLM avec TIEmb \cite{ristoski2017large}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\resizebox{\columnwidth}{!}{%
+\input{results-full}  
+}
+\end{frame}
+
+\section{Extraction de taxonomie expressive}
+
+\subsection{Présentation}
+\begin{frame}{Limites de l'approche précédente}
+    
+\end{frame}
+
+\begin{frame}{Principe général}
+    \begin{figure}
+        \centering
+        \input{fig/texp-overview-2}
+    \end{figure}
+\end{frame}
+
+\subsection{Méthode proposée}
+
+\begin{frame}{Prélèvement et regroupement}
+    
+\end{frame}
+
+\begin{frame}{Extraction d'axiomes}
+    
+\end{frame}
+
+\subsection{Évaluation}
+\begin{frame}{Évaluation quantitative}
+    
+\end{frame}
+
+\begin{frame}{Discussion sur les axiomes obtenus}
+    
+\end{frame}
+
+\section{Conclusion}
+
+\begin{frame}{Conclusion et questions}
+
+
+\end{frame}
+
+\begin{frame}
+        \frametitle{Bibliographie}
+        \bibliographystyle{apalike}
+        \bibliography{refs.bib}
+\end{frame}
+\end{document}

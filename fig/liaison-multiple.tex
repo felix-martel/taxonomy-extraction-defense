@@ -1,0 +1,79 @@
+\begin{tikzpicture}
+[   cnode/.style={draw=gray!40,fill=gray!20,minimum width=0.2mm,circle},
+    colnode/.style={draw=#1!40,fill=#1!20,minimum width=0.2mm,circle},
+    cline/.style={gray!40,thick}
+]
+
+\def\stepx{0.7};
+\def\stepy{0.5};
+
+\node[cnode] (000) at (-0.5*\stepx,-2*\stepy) {};
+\node[cnode] (001) at (-1.5*\stepx,-2*\stepy) {};
+\node[cnode] (010) at (-2.5*\stepx,-2*\stepy) {};
+\node[cnode] (011) at (-3.5*\stepx,-2*\stepy) {};
+\node[cnode] (100) at (0.5*\stepx,-2*\stepy) {};
+\node[cnode] (101) at (1.5*\stepx,-2*\stepy) {};
+\node[cnode] (110) at (2.5*\stepx,-2*\stepy) {};
+\node[cnode] (111) at (3.5*\stepx,-2*\stepy) {};
+
+\node[cnode] (00) at (-3*\stepx,-\stepy) {};
+\node[cnode] (01) at (-1*\stepx,-\stepy) {};
+\node[cnode] (10) at (1*\stepx,-\stepy) {};
+\node[cnode] (11) at (3*\stepx,-\stepy) {};
+
+\node[cnode] (0) at (-2*\stepx,0*\stepy) {};
+\node[cnode] (1) at (2*\stepx,0*\stepy) {};
+
+ \node[cnode] (root) at (0,\stepy) {};
+
+\def\minx{-5.5*\stepx};
+
+\node (e1) at (\minx, 0) {$t_1$};
+\node (e2) at (\minx, -\stepy) {$t_2$};
+\node at (\minx, -2.5*\stepy) {$\vdots$};
+\node (em) at (\minx, -4*\stepy) {$t_M$};
+
+
+
+\node[cnode] (t1) at (-4*\stepx,-4*\stepy) {};
+\node[cnode] (t2) at (-3.2*\stepx,-4*\stepy) {};
+%\node[label=270:{$\ldots$}] at (0.4*\stepx, -4*\stepy) {};
+\node[cnode] (tn) at (4*\stepx,-4*\stepy) {};
+
+\draw[cline] (root) -- (0) {};
+\draw[cline] (root) -- (1) {};
+
+\draw[cline] (00) -- (0) {};
+\draw[cline] (10) -- (1) {};
+\draw[cline] (01) -- (0) {};
+\draw[cline] (11) -- (1) {};
+
+\draw[cline] (01) -- (000) {};
+\draw[cline] (01) -- (001) {};
+\draw[cline] (00) -- (010) {};
+\draw[cline] (00) -- (011) {};
+\draw[cline] (10) -- (100) {};
+\draw[cline] (10) -- (101) {};
+\draw[cline] (11) -- (110) {};
+\draw[cline] (11) -- (111) {};
+
+\draw[dashed,gray!40] (011) -- (t1) {};
+\draw[dashed,gray!40] (111) -- (tn) {};
+
+\draw<1>[->, red] (e1) to[bend left] node[midway, above, sloped]{$m^*(t_1)$} (0);
+\draw<1>[->, blue] (e2) to[bend right] node[midway, below, sloped]{$m^*(t_2)$} (110);
+
+\draw<2>[->, ultra thick, red] (e1.east) to [bend left] node[midway, above] {$Z_{t_1}$} (0);
+\draw<2>[->, thick, red] (e1.east) to [bend left] (00);
+\draw<2>[->, ultra thin, red] (e1.east) to [bend left] (01);
+\draw<2>[->, red] (e1.east) to [bend right] (000);
+\draw<2>[->, thin, red] (e1.east) to [bend right] (011);
+
+\draw<3>[->, ultra thick, blue] (e2.east) to [bend left] (110);
+\draw<3>[->, blue] (e2.east) to [bend left] node[midway, above] {$Z_{t_2}$} (1);
+\draw<3>[->, thick, blue] (e2.east) to [bend left] (11);
+\draw<3>[->, ultra thin, blue] (e2.east) to [bend right] (111);
+\draw<3>[->, thin, blue] (e2.east) to [bend right] (100);
+    
+
+\end{tikzpicture}

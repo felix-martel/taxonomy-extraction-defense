@@ -1,0 +1,117 @@
+\begin{tikzpicture}[
+  box/.style={draw=gray, thick, align=center},
+  arrow/.style={->, shorten >=3pt, gray!80},
+  node/.style={draw=gray, fill=gray!20},
+  hnode/.style={draw=red, fill=red!20},
+  snode/.style={draw=red, fill=red!20, very thick},
+  point/.style={circle, draw=gray!80, fill=gray!30, node distance=1cm and 0.5cm, inner sep=0, minimum height=0.25cm},
+  spoint/.style={circle, draw=gray!80, fill=gray!30, node distance=1cm and 0.3cm, inner sep=0, minimum height=0.25cm},
+  pointA/.style={fill=red, draw=red},
+  pointB/.style={fill=blue, draw=blue},
+]
+
+\def\y{1.5cm};
+\def\x{0.5cm};
+
+\begin{scope}
+\node[point] (root) at (0, 0) {};
+\node[point, below left=of root] (a1) {};
+\node[point, below right=of root] (a2) {};
+\node[point, below left=of a1] (b1) {};
+\node[point, below left=of a2] (b2) {};
+
+\node[red, left=1.5cm of a1] (A) {$A$};
+\node[blue, right=1.5cm of a2] (B) {$B$};
+
+\draw[arrow] (root) to (a1);
+\draw[arrow] (root) to (a2);
+\draw[arrow] (a1) to (b1);
+\draw[arrow] (a1) to (b2);
+
+\draw<2, 4-7, 9>[->, red] (A) to [bend left] node[midway, above, sloped] {$0,3$} (root);
+\draw<2, 4, 8, 9>[->, thick, red] (A) to [bend left] node[midway, above, sloped] {$0,5$} (a1);
+\draw<2, 4, 9>[->, thin, red] (A) to [bend right] node[midway, below, sloped] {$0,1$} (b1);
+\draw<2, 4, 9>[->, thin, red] (A) to [bend right] node[midway, above, sloped] {$0,1$} (b2);
+
+\draw<3-4, 7, 9>[->, blue] (B) to [bend right] node[midway, below, sloped] {$0,3$} (a2);
+\draw<3-4, 5, 9>[->, thick, blue] (B) to [bend right] node[midway, above, sloped] {$0,5$} (a1);
+\draw<3-4, 6, 8, 9>[->, blue] (B) to [bend left] node[midway, below, sloped] {$0,2$} (b2);
+
+\end{scope}
+
+
+%\node at (0, -4cm) {$B \sqsubset A \iff Z_B \subset Z_A$ : 4 cas possibles};
+
+\node<4> at (0, -4cm) {Calcul de $P(B \sqsubset A)$ ?};
+
+\def\shift{1.5cm}
+\def\shifty{-3.2cm}
+
+
+
+\begin{scope}[yshift=\shifty, xshift=-3*\shift]
+\node<5->[spoint, pointA, label={[red]180:{$Z_A$}}] (root) at (0, 0) {};
+\node<5->[spoint, pointB, below left=of root, label={[blue]180:{$Z_B$}}] (a1) {};
+\node<5->[spoint, below right=of root] (a2) {};
+\node<5->[spoint, below left=of a1] (b1) {};
+\node<5->[spoint, below left=of a2] (b3) {};
+\node<5->[spoint, below right=of a1] (b2) {};
+\draw<5->[arrow] (root) to (a1);
+\draw<5->[arrow] (root) to (a2);
+\draw<5->[arrow] (a1) to (b1);
+\draw<5->[arrow] (a1) to (b2);
+\node<5->[below=0.3cm of b2] (eq)  {\textcolor{red}{$0,3$} $\times$ \textcolor{blue}{$0,5$}};
+\node<5->[right=0.3cm of eq] {$+$};
+\end{scope}
+
+
+\begin{scope}[yshift=\shifty, xshift=-\shift]
+\node<6->[spoint, pointA, label={[red]180:{$Z_A$}}] (root) at (0, 0) {};
+\node<6->[spoint, below left=of root] (a1) {};
+\node<6->[spoint, below right=of root] (a2) {};
+\node<6->[spoint, below left=of a1] (b1) {};
+\node<6->[spoint, below left=of a2] (b3) {};
+\node<6->[spoint, pointB, below right=of a1, label={[blue]0:{$Z_B$}}] (b2) {};
+\draw<6->[arrow] (root) to (a1);
+\draw<6->[arrow] (root) to (a2);
+\draw<6->[arrow] (a1) to (b1);
+\draw<6->[arrow] (a1) to (b2);
+\node<6->[below=0.3cm of b2] (eq)  {\textcolor{red}{$0,3$} $\times$ \textcolor{blue}{$0,2$}};
+\node<6->[right=0.3cm of eq] {$+$};
+\end{scope}
+
+
+\begin{scope}[yshift=\shifty, xshift=\shift]
+\node<7->[spoint, pointA, label={[red]180:{$Z_A$}}] (root) at (0, 0) {};
+\node<7->[spoint, below left=of root] (a1) {};
+\node<7->[spoint, pointB, below right=of root, label={[blue]270:{$Z_B$}}] (a2) {};
+\node<7->[spoint, below left=of a1] (b1) {};
+\node<7->[spoint, below left=of a2] (b3) {};
+\node<7->[spoint, below right=of a1] (b2) {};
+\draw<7->[arrow] (root) to (a1);
+\draw<7->[arrow] (root) to (a2);
+\draw<7->[arrow] (a1) to (b1);
+\draw<7->[arrow] (a1) to (b2);
+\node<7->[below=0.3cm of b2] (eq)  {\textcolor{red}{$0,3$} $\times$ \textcolor{blue}{$0,3$}};
+\node<7->[right=0.3cm of eq] {$+$};
+
+\end{scope}
+
+
+\begin{scope}[yshift=\shifty, xshift=3*\shift]
+\node<8->[spoint] (root) at (0, 0) {};
+\node<8->[spoint, pointA, below left=of root, label={[red]180:{$Z_A$}}] (a1) {};
+\node<8->[spoint, below right=of root] (a2) {};
+\node<8->[spoint, below left=of a1] (b1) {};
+\node<8->[spoint, below left=of a2] (b3) {};
+\node<8->[spoint, pointB, below right=of a1, label={[blue]0:{$Z_B$}}] (b2) {};
+\draw<8->[arrow] (root) to (a1);
+\draw<8->[arrow] (root) to (a2);
+\draw<8->[arrow] (a1) to (b1);
+\draw<8->[arrow] (a1) to (b2);
+\node<8->[below=0.3cm of b2] (eq)  {\textcolor{red}{$0,5$} $\times$ \textcolor{blue}{$0,2$}};
+\end{scope}
+
+\node<9->[draw=black, inner sep=0.1cm] at (0, -7cm) {$P(B \sqsubset A) = \sum_{\substack{C, C' \in \mathcal{C} \\ C' \subset C}} P(Z_A= C)\cdot P(Z_B = C')  = 0,4$};
+
+\end{tikzpicture}
